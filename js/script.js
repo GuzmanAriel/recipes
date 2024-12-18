@@ -1,6 +1,6 @@
 
 
-const url = 'https://tasty.p.rapidapi.com/recipes/list?from=0&size=20&tags=under_30_minutes';
+const url = 'https://tasty.p.rapidapi.com/recipes/list?from=0&size=3';
 const options = {
 	method: 'GET',
 	headers: {
