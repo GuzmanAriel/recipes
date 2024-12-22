@@ -15,10 +15,30 @@ async function fetchRecipeData() {
 		const response = await fetch(url, options);
 		const result = await response.json(); // Change text() to json() for structured data
 		console.log(result);
+
+		const firstRecipe = recipes[0];
+		document.getElementById('recipe-name').textContent = firstRecipe.name;
+		document.getElementById('recipe-description').textContent = firstRecipe.description;
+		document.getElementById('view-recipe').addEventListener('click', () => showRecipeDetails(firstRecipe));
+
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
 }
 
+function showRecipeDetails(recipe) {
+	document.getElementById('recipe-details').innerHTML = `
+		<h3>Recipe name</h3>
+		<p id="recipe-name">${recipe.name}</p>
+		<h3>Description</h3>
+		<p id="recipe-description">${recipe.description}</p>
+		<h4>Ingredients</h4>
+		<p id="ingredients">${recipe.ingredients.join(', ')}</p>
+		<h4>Steps</h4>
+		<p id="steps">${recipe.instructions}</p>
+	`;
+}
+
 // Call the async function
 fetchRecipeData();
+
