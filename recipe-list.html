@@ -10,80 +10,86 @@
 
 
 <body>
-  <header>
-    <h1>Recipes</h1>
-  </header>
-  <aside class="filters">
-      <h2>Filters</h2>
-      
-      <div class="filter-section">
-          <h3>Diet</h3>
-          <div class="filter-option">
-              <div class="checkbox-wrapper checked" data-filter="vaggies"></div>
-              <span>Vaggies</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="dairy"></div>
-              <span>Dairy</span>
-          </div>
-      </div>
+    <div class="container">
+        <aside class="filters">
+            <h2>Filters</h2>
+            
+            <div class="filter-section">
+                <h3>Diet</h3>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper checked" data-filter="vaggies"></div>
+                    <span>Vaggies</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="dairy"></div>
+                    <span>Dairy</span>
+                </div>
+            </div>
+    
+            <div class="filter-section">
+                <h3>Allergies</h3>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper checked" data-filter="gluten"></div>
+                    <span>Gluten</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="lorem"></div>
+                    <span>Lorem</span>
+                </div>
+            </div>
+    
+            <div class="filter-section">
+                <h3>Cuisines</h3>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper checked" data-filter="pakistani"></div>
+                    <span>Pakistani</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="indian"></div>
+                    <span>Indian</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="persian"></div>
+                    <span>Persian</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="british"></div>
+                    <span>British</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="irish"></div>
+                    <span>Irish</span>
+                </div>
+                <a href="#" class="see-more">See more</a>
+            </div>
+    
+            <div class="filter-section">
+                <h3>Goals</h3>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper checked" data-filter="weight-loss"></div>
+                    <span>Weight Loss</span>
+                </div>
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="get-active"></div>
+                    <span>Get Active</span>
+                </div>
+            </div>
+        </aside>
+    
+        <main class="content">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search recipes...">
+                <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="recipe-grid">
+                <!-- Recipe cards will be dynamically inserted here -->
+            </div>
+            <h2 class="recommended">Recommended Recipes</h2>
+        </main>
+    </div>
+    
 
-      <div class="filter-section">
-          <h3>Allergies</h3>
-          <div class="filter-option">
-              <div class="checkbox-wrapper checked" data-filter="gluten"></div>
-              <span>Gluten</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="lorem"></div>
-              <span>Lorem</span>
-          </div>
-      </div>
-
-      <div class="filter-section">
-          <h3>Cuisines</h3>
-          <div class="filter-option">
-              <div class="checkbox-wrapper checked" data-filter="pakistani"></div>
-              <span>Pakistani</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="indian"></div>
-              <span>Indian</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="persian"></div>
-              <span>Persian</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="british"></div>
-              <span>British</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="irish"></div>
-              <span>Irish</span>
-          </div>
-          <a href="#" class="see-more">See more</a>
-      </div>
-
-      <div class="filter-section">
-          <h3>Goals</h3>
-          <div class="filter-option">
-              <div class="checkbox-wrapper checked" data-filter="weight-loss"></div>
-              <span>Weight Loss</span>
-          </div>
-          <div class="filter-option">
-              <div class="checkbox-wrapper" data-filter="get-active"></div>
-              <span>Get Active</span>
-          </div>
-      </div>
-  </aside>
-
-  <main class="content">
-      <div class="recipe-grid">
-          <!-- Recipe cards will be dynamically inserted here -->
-      </div>
-      <h2 class="recommended">Recommended Recipes</h2>
-  </main>
+  
   <script src="https://kit.fontawesome.com/a7974b8dae.js" crossorigin="anonymous"></script>
   <script>
     const url = 'https://tasty.p.rapidapi.com/recipes/list?from=0&size=3';
