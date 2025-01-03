@@ -13,78 +13,28 @@
     <div class="container">
         <aside class="filters">
             <h2>Filters</h2>
-            
-            <div class="filter-section">
-                <h3>Diet</h3>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper checked" data-filter="vaggies"></div>
-                    <span>Vaggies</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="dairy"></div>
-                    <span>Dairy</span>
-                </div>
+            <div id="cuisine-filters" class="filter-section">
+                <h3>Cuisine</h3>
+                <div class="filter-options"></div>
             </div>
-    
-            <div class="filter-section">
-                <h3>Allergies</h3>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper checked" data-filter="gluten"></div>
-                    <span>Gluten</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="lorem"></div>
-                    <span>Lorem</span>
-                </div>
+            <div id="meal-filters" class="filter-section">
+                <h3>Meal</h3>
+                <div class="filter-options"></div>
             </div>
-    
-            <div class="filter-section">
-                <h3>Cuisines</h3>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper checked" data-filter="pakistani"></div>
-                    <span>Pakistani</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="indian"></div>
-                    <span>Indian</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="persian"></div>
-                    <span>Persian</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="british"></div>
-                    <span>British</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="irish"></div>
-                    <span>Irish</span>
-                </div>
-                <a href="#" class="see-more">See more</a>
-            </div>
-    
-            <div class="filter-section">
-                <h3>Goals</h3>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper checked" data-filter="weight-loss"></div>
-                    <span>Weight Loss</span>
-                </div>
-                <div class="filter-option">
-                    <div class="checkbox-wrapper" data-filter="get-active"></div>
-                    <span>Get Active</span>
-                </div>
+            <div id="dietary-filters" class="filter-section">
+                <h3>Dietary</h3>
+                <div class="filter-options"></div>
             </div>
         </aside>
-    
+
         <main class="content">
             <div class="search-container">
                 <input type="text" id="search-input" placeholder="Search recipes...">
                 <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
-            <div class="recipe-grid">
+            <div id="recipe-grid" class="recipe-grid">
                 <!-- Recipe cards will be dynamically inserted here -->
             </div>
-            <h2 class="recommended">Recommended Recipes</h2>
         </main>
     </div>
     
@@ -92,61 +42,119 @@
   
   <script src="https://kit.fontawesome.com/a7974b8dae.js" crossorigin="anonymous"></script>
   <script>
-    const url = 'https://tasty.p.rapidapi.com/recipes/list?from=0&size=3';
-    const options = {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-key': '68cba2fba6msh9f5fdc2e429bba0p1bc93ajsn542f247a478b',
-        'x-rapidapi-host': 'tasty.p.rapidapi.com'
-      }
+    const API_URL = 'https://tasty.p.rapidapi.com';
+    const API_OPTIONS = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': '68cba2fba6msh9f5fdc2e429bba0p1bc93ajsn542f247a478b',
+            'x-rapidapi-host': 'tasty.p.rapidapi.com'
+        }
     };
 
-    // Define an async function
-    async function fetchRecipeData() {
-      try {
-        const response = await fetch(url, options);
-        const result = await response.json(); // Change text() to json() for structured data
-        console.log(result);
-        createRecipeCards(result.results);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    let recipes = [];
+    let tags = [];
+    let selectedFilters = [];
+
+    async function fetchTags() {
+        try {
+            const response = await fetch(`${API_URL}/tags/list`, API_OPTIONS);
+            const result = await response.json();
+            tags = result.results;
+            displayFilters();
+        } catch (error) {
+            console.error("Error fetching tags:", error);
+        }
     }
 
-      // Generate recipe cards
-      function createRecipeCards(recipes) {
-          const grid = document.querySelector('.recipe-grid');
+    async function fetchRecipes() {
+        try {
+            const response = await fetch(`${API_URL}/recipes/list?from=0&size=20`, API_OPTIONS);
+            const result = await response.json();
+            recipes = result.results;
+            displayRecipes();
+        } catch (error) {
+            console.error("Error fetching recipes:", error);
+        }
+    }
 
-          recipes.forEach((recipe)=>{
-            const card = document.createElement('div');
-              card.className = 'recipe-card';
-              card.innerHTML = `
-                  <img src="${recipe.thumbnail_url}" alt="${recipe.title}" class="recipe-image">
-                  <div class="recipe-info">
-                      <div class="recipe-header">
-                          <h3 class="recipe-title">${recipe.name}</h3>
-                           <div class="recipe-actions">
-                              <button class="action-button"><i class="fa-regular fa-xl fa-bookmark"></i></button>
-                          </div>
-                          
-                      </div>
-                      <div class="recipe-footer">
-                          <div class="recipe-tag">${recipe.tag}</div>
-                          <span class="recipe-time">${recipe.total_time_minutes} min</span>
-                      </div>
-                  </div>
-              `;
-              grid.appendChild(card);
-          });
-      }
+    function displayFilters() {
+        const filterTypes = ['cuisine', 'meal', 'dietary'];
+        filterTypes.forEach(type => {
+            const filteredTags = tags.filter(tag => tag.root_tag_type === type);
+            const filterContainer = document.querySelector(`#${type}-filters .filter-options`);
+            filterContainer.innerHTML = filteredTags.map(tag => `
+                <div class="filter-option">
+                    <div class="checkbox-wrapper" data-filter="${tag.name}"></div>
+                    <span>${tag.display_name}</span>
+                </div>
+            `).join('');
+        });
 
-      // Handle checkbox toggles
-      document.querySelectorAll('.checkbox-wrapper').forEach(checkbox => {
-          checkbox.addEventListener('click', () => {
-              checkbox.classList.toggle('checked');
-          });
-      });
-      fetchRecipeData();
+        document.querySelectorAll('.checkbox-wrapper').forEach(checkbox => {
+            checkbox.addEventListener('click', () => {
+                checkbox.classList.toggle('checked');
+                const filterName = checkbox.getAttribute('data-filter');
+                toggleFilter(filterName);
+                displayRecipes();
+            });
+        });
+    }
+
+    function toggleFilter(filterName) {
+        const index = selectedFilters.indexOf(filterName);
+        if (index === -1) {
+            selectedFilters.push(filterName);
+        } else {
+            selectedFilters.splice(index, 1);
+        }
+    }
+
+    function displayRecipes() {
+        const grid = document.getElementById('recipe-grid');
+        const filteredRecipes = filterRecipes();
+        grid.innerHTML = filteredRecipes.map(recipe => `
+            <div class="recipe-card">
+                <img src="${recipe.thumbnail_url}" alt="${recipe.name}" class="recipe-image">
+                <div class="recipe-info">
+                    <div class="recipe-header">
+                        <h3 class="recipe-title">${recipe.name}</h3>
+                        <div class="recipe-actions">
+                            <button class="action-button">
+                                <i class="fa-regular fa-xl fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="recipe-footer">
+                        <div class="recipe-tag">
+                            ${recipe.tags.length > 0 ? recipe.tags[0].display_name : 'No tag'}
+                        </div>
+                        <span class="recipe-time">${recipe.total_time_minutes || 'N/A'} min</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterRecipes() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        return recipes.filter(recipe => {
+            const matchesSearch = recipe.name.toLowerCase().includes(searchTerm);
+            const matchesFilters = selectedFilters.length === 0 || 
+                recipe.tags.some(tag => selectedFilters.includes(tag.name));
+            return matchesSearch && matchesFilters;
+        });
+    }
+
+    document.getElementById('search-button').addEventListener('click', displayRecipes);
+    document.getElementById('search-input').addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            displayRecipes();
+        }
+    });
+
+    // Initialize the page
+    fetchTags();
+    fetchRecipes();
   </script>
 </body>
 </html>
