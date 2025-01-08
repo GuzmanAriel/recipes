@@ -1,120 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipes</title>
     <!-- Link to external CSS -->
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
+    <link rel="stylesheet" href="/recipes/css/styles.css" />
+  </head>
 
-
-<body>
+  <body>
     <div class="container">
-        <aside class="filters">
-            <h2>Filters</h2>
-            <div id="cuisine-filters" class="filter-section">
-                <h3>Cuisine</h3>
-                <div class="filter-options"></div>
-            </div>
-            <div id="meal-filters" class="filter-section">
-                <h3>Meal</h3>
-                <div class="filter-options"></div>
-            </div>
-            <div id="dietary-filters" class="filter-section">
-                <h3>Dietary</h3>
-                <div class="filter-options"></div>
-            </div>
-        </aside>
+      <aside class="filters">
+        <h2>Filters</h2>
+        <div id="cuisine-filters" class="filter-section">
+          <h3>Cuisine</h3>
+          <div class="filter-options"></div>
+        </div>
+        <div id="meal-filters" class="filter-section">
+          <h3>Meal</h3>
+          <div class="filter-options"></div>
+        </div>
+        <div id="dietary-filters" class="filter-section">
+          <h3>Dietary</h3>
+          <div class="filter-options"></div>
+        </div>
+      </aside>
 
-        <main class="content">
-            <div class="search-container">
-                <input type="text" id="search-input" placeholder="Search recipes...">
-                <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
-            <div id="recipe-grid" class="recipe-grid">
-                <!-- Recipe cards will be dynamically inserted here -->
-            </div>
-        </main>
+      <main class="content">
+        <div class="search-container">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search recipes..."
+          />
+          <button id="search-button">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+        <div id="recipe-grid" class="recipe-grid">
+          <!-- Recipe cards will be dynamically inserted here -->
+        </div>
+      </main>
     </div>
-    
 
-  
-  <script src="https://kit.fontawesome.com/a7974b8dae.js" crossorigin="anonymous"></script>
-  <script>
-    const API_URL = 'https://tasty.p.rapidapi.com';
-    const API_OPTIONS = {
-        method: 'GET',
+    <script
+      src="https://kit.fontawesome.com/a7974b8dae.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const API_URL = "https://tasty.p.rapidapi.com";
+      const API_OPTIONS = {
+        method: "GET",
         headers: {
-            'x-rapidapi-key': '68cba2fba6msh9f5fdc2e429bba0p1bc93ajsn542f247a478b',
-            'x-rapidapi-host': 'tasty.p.rapidapi.com'
-        }
-    };
+          "x-rapidapi-key":
+            "68cba2fba6msh9f5fdc2e429bba0p1bc93ajsn542f247a478b",
+          "x-rapidapi-host": "tasty.p.rapidapi.com",
+        },
+      };
 
-    let recipes = [];
-    let tags = [];
-    let selectedFilters = [];
+      let recipes = [];
+      let tags = [];
+      let selectedFilters = [];
 
-    async function fetchTags() {
+      async function fetchTags() {
         try {
-            const response = await fetch(`${API_URL}/tags/list`, API_OPTIONS);
-            const result = await response.json();
-            tags = result.results;
-            displayFilters();
+          const response = await fetch(`${API_URL}/tags/list`, API_OPTIONS);
+          const result = await response.json();
+          tags = result.results;
+          displayFilters();
         } catch (error) {
-            console.error("Error fetching tags:", error);
+          console.error("Error fetching tags:", error);
         }
-    }
+      }
 
-    async function fetchRecipes() {
+      async function fetchRecipes() {
         try {
-            const response = await fetch(`${API_URL}/recipes/list?from=0&size=20`, API_OPTIONS);
-            const result = await response.json();
-            recipes = result.results;
-            displayRecipes();
+          const response = await fetch(
+            `${API_URL}/recipes/list?from=0&size=20`,
+            API_OPTIONS
+          );
+          const result = await response.json();
+          recipes = result.results;
+          displayRecipes();
         } catch (error) {
-            console.error("Error fetching recipes:", error);
+          console.error("Error fetching recipes:", error);
         }
-    }
+      }
 
-    function displayFilters() {
-        const filterTypes = ['cuisine', 'meal', 'dietary'];
-        filterTypes.forEach(type => {
-            const filteredTags = tags.filter(tag => tag.root_tag_type === type);
-            const filterContainer = document.querySelector(`#${type}-filters .filter-options`);
-            filterContainer.innerHTML = filteredTags.map(tag => `
+      function displayFilters() {
+        const filterTypes = ["cuisine", "meal", "dietary"];
+        filterTypes.forEach((type) => {
+          const filteredTags = tags.filter((tag) => tag.root_tag_type === type);
+          const filterContainer = document.querySelector(
+            `#${type}-filters .filter-options`
+          );
+          filterContainer.innerHTML = filteredTags
+            .map(
+              (tag) => `
                 <div class="filter-option">
                     <div class="checkbox-wrapper" data-filter="${tag.name}"></div>
                     <span>${tag.display_name}</span>
                 </div>
-            `).join('');
+            `
+            )
+            .join("");
         });
 
-        document.querySelectorAll('.checkbox-wrapper').forEach(checkbox => {
-            checkbox.addEventListener('click', () => {
-                checkbox.classList.toggle('checked');
-                const filterName = checkbox.getAttribute('data-filter');
-                toggleFilter(filterName);
-                displayRecipes();
-            });
+        document.querySelectorAll(".checkbox-wrapper").forEach((checkbox) => {
+          checkbox.addEventListener("click", () => {
+            checkbox.classList.toggle("checked");
+            const filterName = checkbox.getAttribute("data-filter");
+            toggleFilter(filterName);
+            displayRecipes();
+          });
         });
-    }
+      }
 
-    function toggleFilter(filterName) {
+      function toggleFilter(filterName) {
         const index = selectedFilters.indexOf(filterName);
         if (index === -1) {
-            selectedFilters.push(filterName);
+          selectedFilters.push(filterName);
         } else {
-            selectedFilters.splice(index, 1);
+          selectedFilters.splice(index, 1);
         }
-    }
+      }
 
-    function displayRecipes() {
-        const grid = document.getElementById('recipe-grid');
+      function displayRecipes() {
+        const grid = document.getElementById("recipe-grid");
         const filteredRecipes = filterRecipes();
-        grid.innerHTML = filteredRecipes.map(recipe => `
+        grid.innerHTML = filteredRecipes
+          .map(
+            (recipe) => `
             <div class="recipe-card">
-                <img src="${recipe.thumbnail_url}" alt="${recipe.name}" class="recipe-image">
+                <img src="${recipe.thumbnail_url}" alt="${
+              recipe.name
+            }" class="recipe-image">
                 <div class="recipe-info">
                     <div class="recipe-header">
                         <h3 class="recipe-title">${recipe.name}</h3>
@@ -126,35 +146,50 @@
                     </div>
                     <div class="recipe-footer">
                         <div class="recipe-tag">
-                            ${recipe.tags.length > 0 ? recipe.tags[0].display_name : 'No tag'}
+                            ${
+                              recipe.tags.length > 0
+                                ? recipe.tags[0].display_name
+                                : "No tag"
+                            }
                         </div>
-                        <span class="recipe-time">${recipe.total_time_minutes || 'N/A'} min</span>
+                        <span class="recipe-time">${
+                          recipe.total_time_minutes || "N/A"
+                        } min</span>
                     </div>
                 </div>
             </div>
-        `).join('');
-    }
+        `
+          )
+          .join("");
+      }
 
-    function filterRecipes() {
-        const searchTerm = document.getElementById('search-input').value.toLowerCase();
-        return recipes.filter(recipe => {
-            const matchesSearch = recipe.name.toLowerCase().includes(searchTerm);
-            const matchesFilters = selectedFilters.length === 0 || 
-                recipe.tags.some(tag => selectedFilters.includes(tag.name));
-            return matchesSearch && matchesFilters;
+      function filterRecipes() {
+        const searchTerm = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        return recipes.filter((recipe) => {
+          const matchesSearch = recipe.name.toLowerCase().includes(searchTerm);
+          const matchesFilters =
+            selectedFilters.length === 0 ||
+            recipe.tags.some((tag) => selectedFilters.includes(tag.name));
+          return matchesSearch && matchesFilters;
         });
-    }
+      }
 
-    document.getElementById('search-button').addEventListener('click', displayRecipes);
-    document.getElementById('search-input').addEventListener('keyup', (event) => {
-        if (event.key === 'Enter') {
+      document
+        .getElementById("search-button")
+        .addEventListener("click", displayRecipes);
+      document
+        .getElementById("search-input")
+        .addEventListener("keyup", (event) => {
+          if (event.key === "Enter") {
             displayRecipes();
-        }
-    });
+          }
+        });
 
-    // Initialize the page
-    fetchTags();
-    fetchRecipes();
-  </script>
-</body>
+      // Initialize the page
+      fetchTags();
+      fetchRecipes();
+    </script>
+  </body>
 </html>

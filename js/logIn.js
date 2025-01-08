@@ -14,6 +14,13 @@ form.addEventListener("submit", (e) => {
   engine(username, 0, "Username cannot be blank");
   engine(email, 1, "Email cannot be blank");
   engine(password, 2, "Password cannot be blank");
+  if (
+    errorMsg[0].innerHTML === "" &&
+    errorMsg[1].innerHTML === "" &&
+    errorMsg[2].innerHTML === ""
+  ) {
+    window.location.href = "recipe-list.html";
+  }
 });
 
 let engine = (id, serial, message) => {
